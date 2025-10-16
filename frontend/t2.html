@@ -421,7 +421,8 @@
       // Load CSV data
       async function loadData() {
         try {
-          const response = await fetch("data/DataDHT.csv");
+          // เพิ่ม timestamp เพื่อป้องกัน cache
+          const response = await fetch("data/DataDHT.csv?ts=" + Date.now());
           const csvText = await response.text();
           allData = parseCSV(csvText);
 
