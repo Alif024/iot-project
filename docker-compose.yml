@@ -1,17 +1,4 @@
 services:
-  hivemq:
-    image: hivemq/hivemq4
-    container_name: hivemq
-    ports:
-      - "1883:1883"
-      - "8080:8080"
-    volumes:
-      - ./hivemq/data:/opt/hivemq/data
-      - ./hivemq/log:/opt/hivemq/log
-    restart: unless-stopped
-    networks:
-      - appnet
-
   nodered:
     image: nodered/node-red
     container_name: nodered
@@ -19,8 +6,6 @@ services:
       - "1880:1880"
     volumes:
       - ./nodered:/data
-    depends_on:
-      - hivemq
     restart: unless-stopped
     networks:
       - appnet
