@@ -41,7 +41,7 @@
         ],
         "x": 714,
         "y": 419,
-        "w": 1432,
+        "w": 1732,
         "h": 282
     },
     {
@@ -272,7 +272,7 @@
         "type": "function",
         "z": "57039b3341dfaa9c",
         "name": "set data to flow",
-        "func": "let t = flow.get(\"temperature\");\nlet h = flow.get(\"humidity\");\nlet m = flow.get(\"moisture\");\n\nlet sensor = flow.get(\"sensor\") || {};\n\nsensor.temperature = t;\nsensor.moisture = h;\nsensor.humidity = m;\n\n// เซฟกลับลง flow context\nflow.set(\"sensor\", sensor);\nmsg.payload = sensor\nreturn msg",
+        "func": "// อ่านค่าจาก flow context\nlet sensor = flow.get(\"sensor\") || {};\nlet t = sensor.temperature;\nlet m = sensor.moisture;\nlet h = sensor.humidity;\n\n// ดึงวันที่เวลา\nconst now = new Date();\nconst day = String(now.getDate()).padStart(2, '0');      // ✅ เติม 0 ด้านหน้า\nconst month = String(now.getMonth() + 1).padStart(2, '0'); // เดือนเริ่มที่ 0 ต้อง +1 เสมอ\nconst year = now.getFullYear();\nconst hour = String(now.getHours()).padStart(2, '0');\nconst minute = String(now.getMinutes()).padStart(2, '0');\nconst second = String(now.getSeconds()).padStart(2, '0');\n\n// สร้าง payload ในรูปแบบ \"dd/mm/yyyy,hh:mm:ss,t,m,h\"\nmsg.payload = `${day}/${month}/${year},${hour}:${minute}:${second},${t},${m},${h}`;\n\nreturn msg;",
         "outputs": 1,
         "timeout": 0,
         "noerr": 0,
@@ -325,7 +325,7 @@
         "targetType": "msg",
         "statusVal": "",
         "statusType": "auto",
-        "x": 1200,
+        "x": 1220,
         "y": 640,
         "wires": []
     },
@@ -458,6 +458,23 @@
         "x": 1140,
         "y": 1080,
         "wires": []
+    },
+    {
+        "id": "c7d60b702ab042b9",
+        "type": "file",
+        "z": "57039b3341dfaa9c",
+        "name": "",
+        "filename": "/data/shared/DataDHT.csv",
+        "filenameType": "str",
+        "appendNewline": true,
+        "createDir": false,
+        "overwriteFile": "false",
+        "encoding": "none",
+        "x": 1290,
+        "y": 560,
+        "wires": [
+            []
+        ]
     },
     {
         "id": "3a22f6d2099e6565",
@@ -660,8 +677,8 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 1450,
-        "y": 640,
+        "x": 1750,
+        "y": 660,
         "wires": [
             [
                 "5ac64f3fe0b6f521"
@@ -680,8 +697,8 @@
         "createDir": false,
         "overwriteFile": "false",
         "encoding": "none",
-        "x": 1860,
-        "y": 640,
+        "x": 2160,
+        "y": 660,
         "wires": [
             []
         ]
@@ -737,8 +754,8 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 1260,
-        "y": 480,
+        "x": 1540,
+        "y": 660,
         "wires": [
             [
                 "25e45f3c5a39ec3d",
