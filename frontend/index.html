@@ -4,23 +4,31 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Dashboard - ข้อมูลและการควบคุม</title>
-    <link rel="icon" type="image/png" href="D:\projegto\Protos\IoT.png" />
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
     />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;700&display=swap"
+      rel="stylesheet"
+    />
+
     <style>
+      :root {
+        --primary-color: #0d6efd;
+      }
+
       /* --- General Styles --- */
       body {
-        font-family: "Sarabun", sans-serif; /* ใช้ฟอนต์ที่รองรับภาษาไทย */
+        font-family: "Sarabun", sans-serif;
         margin: 0;
         background-color: #f0f2f5;
         color: #333;
         display: flex;
-      }
-      .container {
-        display: flex;
-        width: 100%;
+        height: 100vh;
+        overflow: hidden;
       }
 
       /* --- Sidebar --- */
@@ -33,8 +41,8 @@
         transition: width 0.3s ease-in-out;
         box-sizing: border-box;
         overflow-x: hidden;
-        height: 100vh;
       }
+
       .sidebar-header {
         display: flex;
         align-items: center;
@@ -42,21 +50,25 @@
         margin-bottom: 25px;
         white-space: nowrap;
       }
+
       .sidebar h2 {
         margin: 0;
-        font-size: 1.1rem;
-        color: #007bff;
+        font-size: 1.2rem;
+        color: var(--primary-color);
       }
+
       .hamburger-icon {
         font-size: 22px;
         cursor: pointer;
         padding: 5px;
       }
+
       .sidebar nav ul {
         list-style: none;
         padding: 0;
         margin: 0;
       }
+
       .sidebar nav li a {
         display: flex;
         align-items: center;
@@ -69,15 +81,18 @@
         transition: background-color 0.3s;
         white-space: nowrap;
       }
+
       .sidebar nav li a.active,
       .sidebar nav li a:hover {
         background-color: #007bff;
         color: white;
       }
+
       .sidebar nav li a i {
         width: 20px;
         text-align: center;
       }
+
       .sidebar.collapsed {
         width: 80px;
       }
@@ -94,16 +109,20 @@
       .main-content {
         flex-grow: 1;
         padding: 30px;
+        overflow-y: auto;
       }
       header h1 {
         font-size: 2rem;
         margin-bottom: 20px;
       }
+
+      /* --- ✨ CARDS CONTAINER (ส่วนที่แก้ไข) --- */
       .cards-container {
         display: flex; /* 1. เปลี่ยนจาก grid เป็น flex */
         flex-wrap: wrap; /* 2. ทำให้การ์ดขึ้นบรรทัดใหม่เมื่อจอแคบ */
         gap: 20px;
       }
+
       .card {
         background-color: white;
         padding: 25px;
@@ -112,6 +131,8 @@
         text-align: center;
         flex: 1 1 280px; /* 3. คำสั่งสำคัญ ให้การ์ดยืด-หดได้ และมีขนาดพื้นฐาน 280px */
       }
+      /* --- จบส่วนที่แก้ไข --- */
+
       .card h3 {
         margin-top: 0;
         font-size: 1.2rem;
@@ -172,87 +193,59 @@
       input:checked + .slider:before {
         transform: translateX(26px);
       }
-      .action-buttons {
-        grid-column: 1 / -1;
-        display: flex;
-        justify-content: center;
-        gap: 15px;
-        margin-top: 20px;
-      }
-      .btn {
-        padding: 12px 25px;
-        border: none;
-        border-radius: 8px;
-        background-color: #6c757d;
-        color: white;
-        font-size: 1rem;
-        cursor: pointer;
-        transition: background-color 0.3s;
-      }
-      .btn:hover {
-        background-color: #5a6268;
-      }
     </style>
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;700&display=swap"
-      rel="stylesheet"
-    />
   </head>
   <body>
-    <div class="container">
-      <aside class="sidebar" id="mySidebar">
-        <div class="sidebar-header">
-          <h2>ระบบรดน้ำทุเรียน</h2>
-          <i class="fas fa-bars hamburger-icon" onclick="toggleMenu()"></i>
-        </div>
-        <nav>
-          <ul>
-            <li>
-              <a href="#" class="active">
-                <i class="fas fa-table-cells-large"></i>
-                <span class="menu-text">ข้อมูลและการควบคุม</span>
-              </a>
-            </li>
-            <li>
-              <a href="t2.html">
-                <i class="fas fa-chart-line"></i>
-                <span class="menu-text">ค่าเฉลี่ยข้อมูล</span>
-              </a>
-            </li>
-          </ul>
-        </nav>
-      </aside>
+    <aside class="sidebar" id="mySidebar">
+      <div class="sidebar-header">
+        <h2>ระบบรดน้ำทุเรียน</h2>
+        <i class="fas fa-bars hamburger-icon" onclick="toggleMenu()"></i>
+      </div>
+      <nav>
+        <ul>
+          <li>
+            <a href="#" class="active">
+              <i class="fas fa-table-cells-large"></i>
+              <span class="menu-text">ข้อมูลและการควบคุม</span>
+            </a>
+          </li>
+          <li>
+            <a href="t2.html">
+              <i class="fas fa-chart-line"></i>
+              <span class="menu-text">ค่าเฉลี่ยข้อมูล</span>
+            </a>
+          </li>
+        </ul>
+      </nav>
+    </aside>
 
-      <main class="main-content">
-        <header>
-          <h1>แดชบอร์ดข้อมูลและการควบคุม</h1>
-        </header>
-        <div class="cards-container">
-          <div class="card">
-            <h3>🌡️ อุณหภูมิปัจจุบัน</h3>
-            <p class="data-display">28 °C</p>
-          </div>
-          <div class="card">
-            <h3>💧 ความชื้นปัจจุบัน</h3>
-            <p class="data-display">65 %</p>
-          </div>
-          <div class="card">
-            <h3>🌱 ความชื้นดินปัจจุบัน</h3>
-            <p class="data-display">30 %</p>
-          </div>
-          <div class="card valve-control">
-            <h3>🚱 การควบคุมวาล์วน้ำ</h3>
-            <p id="valveStatus" class="valve-status">สถานะ: ปิดอยู่</p>
-            <label class="switch">
-              <input type="checkbox" id="valveSwitch" />
-              <span class="slider"></span>
-            </label>
-          </div>
+    <main class="main-content">
+      <header>
+        <h1>แดชบอร์ดข้อมูลและการควบคุม</h1>
+      </header>
+      <div class="cards-container">
+        <div class="card">
+          <h3>🌡️ อุณหภูมิปัจจุบัน</h3>
+          <p class="data-display">28 °C</p>
         </div>
-      </main>
-    </div>
+        <div class="card">
+          <h3>💧 ความชื้นปัจจุบัน</h3>
+          <p class="data-display">65 %</p>
+        </div>
+        <div class="card">
+          <h3>🌱 ความชื้นดินปัจจุบัน</h3>
+          <p class="data-display">30 %</p>
+        </div>
+        <div class="card valve-control">
+          <h3>🚱 การควบคุมวาล์วน้ำ</h3>
+          <p id="valveStatus" class="valve-status">สถานะ: ปิดอยู่</p>
+          <label class="switch">
+            <input type="checkbox" id="valveSwitch" />
+            <span class="slider"></span>
+          </label>
+        </div>
+      </div>
+    </main>
 
     <script>
       function toggleMenu() {
@@ -265,12 +258,8 @@
       valveSwitch.addEventListener("change", function () {
         if (this.checked) {
           valveStatus.textContent = "สถานะ: เปิดอยู่";
-          // เพิ่มโค้ดสำหรับส่งคำสั่งเปิดวาล์วไปยัง server/IoT ที่นี่
-          console.log("Valve Opened");
         } else {
           valveStatus.textContent = "สถานะ: ปิดอยู่";
-          // เพิ่มโค้ดสำหรับส่งคำสั่งปิดวาล์วไปยัง server/IoT ที่นี่
-          console.log("Valve Closed");
         }
       });
 
