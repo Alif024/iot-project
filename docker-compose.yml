@@ -1,0 +1,53 @@
+services:
+  hivemq:
+    image: hivemq/hivemq4
+    container_name: hivemq
+    ports:
+      - "1883:1883"
+      - "8080:8080"
+    volumes:
+      - ./hivemq/data:/opt/hivemq/data
+      - ./hivemq/log:/opt/hivemq/log
+    restart: unless-stopped
+    networks:
+      - appnet
+
+  nodered:
+    image: nodered/node-red
+    container_name: nodered
+    ports:
+      - "1880:1880"
+    volumes:
+      - ./nodered:/data
+    depends_on:
+      - hivemq
+    restart: unless-stopped
+    networks:
+      - appnet
+
+  nginx:
+    image: nginx:stable-alpine3.21-perl
+    container_name: static-nginx
+    ports:
+      - "8081:80"
+    volumes:
+      - ./frontend:/usr/share/nginx/html:ro
+    restart: unless-stopped
+    networks:
+      - appnet
+
+  ngrok:
+    image: ngrok/ngrok:latest
+    container_name: ngrok
+    depends_on:
+      - nginx
+    command: ["http", "--authtoken=${NGROK_AUTHTOKEN}", "--log=stdout", "nginx:80"]
+    environment:
+      - NGROK_AUTHTOKEN=${NGROK_AUTHTOKEN}
+    restart: unless-stopped
+    networks:
+      - appnet
+
+networks:
+  appnet:
+    driver: bridge
