@@ -5,6 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Dashboard - ข้อมูลและการควบคุม</title>
     <link rel="icon" type="image/png" href="D:\projegto\Protos\IoT.png" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+    />
     <style>
       /* --- General Styles --- */
       body {
@@ -21,33 +25,69 @@
 
       /* --- Sidebar --- */
       .sidebar {
-        width: 250px;
+        width: 260px;
         background-color: #ffffff;
         padding: 20px;
-        height: 100vh;
         box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+        flex-shrink: 0;
+        transition: width 0.3s ease-in-out;
+        box-sizing: border-box;
+        overflow-x: hidden;
+        height: 100vh;
+      }
+      .sidebar-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 25px;
+        white-space: nowrap;
       }
       .sidebar h2 {
-        text-align: center;
+        margin: 0;
+        font-size: 1.1rem;
         color: #007bff;
+      }
+      .hamburger-icon {
+        font-size: 22px;
+        cursor: pointer;
+        padding: 5px;
       }
       .sidebar nav ul {
         list-style: none;
         padding: 0;
+        margin: 0;
       }
       .sidebar nav li a {
-        display: block;
+        display: flex;
+        align-items: center;
+        gap: 15px;
         padding: 12px 15px;
         text-decoration: none;
         color: #555;
         border-radius: 8px;
         margin-bottom: 10px;
         transition: background-color 0.3s;
+        white-space: nowrap;
       }
       .sidebar nav li a.active,
       .sidebar nav li a:hover {
         background-color: #007bff;
         color: white;
+      }
+      .sidebar nav li a i {
+        width: 20px;
+        text-align: center;
+      }
+      .sidebar.collapsed {
+        width: 80px;
+      }
+      .sidebar.collapsed h2,
+      .sidebar.collapsed .menu-text {
+        display: none;
+      }
+      .sidebar.collapsed .sidebar-header,
+      .sidebar.collapsed nav li a {
+        justify-content: center;
       }
 
       /* --- Main Content --- */
@@ -60,8 +100,8 @@
         margin-bottom: 20px;
       }
       .cards-container {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        display: flex; /* 1. เปลี่ยนจาก grid เป็น flex */
+        flex-wrap: wrap; /* 2. ทำให้การ์ดขึ้นบรรทัดใหม่เมื่อจอแคบ */
         gap: 20px;
       }
       .card {
@@ -70,6 +110,7 @@
         border-radius: 12px;
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
         text-align: center;
+        flex: 1 1 280px; /* 3. คำสั่งสำคัญ ให้การ์ดยืด-หดได้ และมีขนาดพื้นฐาน 280px */
       }
       .card h3 {
         margin-top: 0;
@@ -85,7 +126,7 @@
       .card.valve-control {
         background-color: #343a40;
         color: white;
-        grid-column: 1 / -1; /* ทำให้การ์ดนี้เต็มความกว้าง */
+        flex-basis: 100%; /* 4. ทำให้การ์ดวาล์วน้ำเต็มความกว้างเสมอ */
       }
       .valve-control h3 {
         color: #f8f9fa;
@@ -161,12 +202,25 @@
   </head>
   <body>
     <div class="container">
-      <aside class="sidebar">
-        <h2>ระบบควบคุบรดน้ำต้นทุเรียน</h2>
+      <aside class="sidebar" id="mySidebar">
+        <div class="sidebar-header">
+          <h2>ระบบรดน้ำทุเรียน</h2>
+          <i class="fas fa-bars hamburger-icon" onclick="toggleMenu()"></i>
+        </div>
         <nav>
           <ul>
-            <li><a href="t1.html" class="active">🎛️ ข้อมูลและการควบคุม</a></li>
-            <li><a href="t2.html">📊 ค่าเฉลี่ยข้อมูล</a></li>
+            <li>
+              <a href="#" class="active">
+                <i class="fas fa-table-cells-large"></i>
+                <span class="menu-text">ข้อมูลและการควบคุม</span>
+              </a>
+            </li>
+            <li>
+              <a href="t2.html">
+                <i class="fas fa-chart-line"></i>
+                <span class="menu-text">ค่าเฉลี่ยข้อมูล</span>
+              </a>
+            </li>
           </ul>
         </nav>
       </aside>
@@ -201,36 +255,46 @@
     </div>
 
     <script>
-        const valveSwitch = document.getElementById('valveSwitch');
-        const valveStatus = document.getElementById('valveStatus');
+      function toggleMenu() {
+        document.getElementById("mySidebar").classList.toggle("collapsed");
+      }
 
-        valveSwitch.addEventListener('change', function() {
-            if (this.checked) {
-                valveStatus.textContent = 'สถานะ: เปิดอยู่';
-                // เพิ่มโค้ดสำหรับส่งคำสั่งเปิดวาล์วไปยัง server/IoT ที่นี่
-                console.log('Valve Opened');
-            } else {
-                valveStatus.textContent = 'สถานะ: ปิดอยู่';
-                // เพิ่มโค้ดสำหรับส่งคำสั่งปิดวาล์วไปยัง server/IoT ที่นี่
-                console.log('Valve Closed');
-            }
-        });
+      const valveSwitch = document.getElementById("valveSwitch");
+      const valveStatus = document.getElementById("valveStatus");
 
-        // ดึงข้อมูล sensor จาก Node-RED API
-        function updateSensorData() {
-            fetch('/api/sensor')
-                .then(response => response.json())
-                .then(data => {
-                    document.querySelectorAll('.card .data-display')[0].textContent = `${data.temperature ?? '-'} °C`;
-                    document.querySelectorAll('.card .data-display')[2].textContent = `${data.moisture ?? '-'} %`;
-                    document.querySelectorAll('.card .data-display')[1].textContent = `${data.humidity ?? '-'} %`;
-                })
-                .catch(err => {
-                    console.error('API error:', err);
-                });
+      valveSwitch.addEventListener("change", function () {
+        if (this.checked) {
+          valveStatus.textContent = "สถานะ: เปิดอยู่";
+          // เพิ่มโค้ดสำหรับส่งคำสั่งเปิดวาล์วไปยัง server/IoT ที่นี่
+          console.log("Valve Opened");
+        } else {
+          valveStatus.textContent = "สถานะ: ปิดอยู่";
+          // เพิ่มโค้ดสำหรับส่งคำสั่งปิดวาล์วไปยัง server/IoT ที่นี่
+          console.log("Valve Closed");
         }
-        setInterval(updateSensorData, 5000);
-        updateSensorData();
+      });
+
+      // ดึงข้อมูล sensor จาก Node-RED API
+      function updateSensorData() {
+        fetch("/api/sensor")
+          .then((response) => response.json())
+          .then((data) => {
+            document.querySelectorAll(
+              ".card .data-display"
+            )[0].textContent = `${data.temperature ?? "-"} °C`;
+            document.querySelectorAll(
+              ".card .data-display"
+            )[2].textContent = `${data.moisture ?? "-"} %`;
+            document.querySelectorAll(
+              ".card .data-display"
+            )[1].textContent = `${data.humidity ?? "-"} %`;
+          })
+          .catch((err) => {
+            console.error("API error:", err);
+          });
+      }
+      setInterval(updateSensorData, 5000);
+      updateSensorData();
     </script>
   </body>
 </html>

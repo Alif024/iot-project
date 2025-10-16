@@ -1,342 +1,425 @@
 <!DOCTYPE html>
 <html lang="th">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Dashboard - ค่าเฉลี่ยข้อมูล</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <link rel="icon" type="image/png" href="D:\projegto\Protos\IoT.png">
+    <link rel="icon" type="image/png" href="D:\projegto\Protos\IoT.png" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+    />
     <style>
-        /* --- General Styles --- */
-        body {
-            font-family: 'Sarabun', sans-serif;
-            margin: 0;
-            background-color: #f0f2f5;
-            color: #333;
-            display: flex;
-        }
-        .container {
-            display: flex;
-            width: 100%;
-        }
+      /* --- General Styles --- */
+      body {
+        font-family: "Sarabun", sans-serif;
+        margin: 0;
+        background-color: #f0f2f5;
+        color: #333;
+        display: flex;
+      }
+      .container {
+        display: flex;
+        width: 100%;
+      }
 
-        /* --- Sidebar --- */
-        .sidebar {
-            width: 250px;
-            background-color: #ffffff;
-            padding: 20px;
-            height: 100vh;
-            box-shadow: 2px 0 5px rgba(0,0,0,0.1);
-            flex-shrink: 0;
-        }
-        .sidebar h2 {
-            text-align: center;
-            color: #0d6efd;
-        }
-        .sidebar nav ul {
-            list-style: none;
-            padding: 0;
-        }
-        .sidebar nav li a {
-            display: block;
-            padding: 12px 15px;
-            text-decoration: none;
-            color: #555;
-            border-radius: 8px;
-            margin-bottom: 10px;
-            transition: background-color 0.3s, color 0.3s;
-        }
-        .sidebar nav li a.active, .sidebar nav li a:hover {
-            background-color: #0d6efd;
-            color: white;
-        }
+      /* --- Sidebar --- */
+      .sidebar {
+        width: 260px;
+        background-color: #ffffff;
+        padding: 20px;
+        box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+        flex-shrink: 0;
+        transition: width 0.3s ease-in-out;
+        box-sizing: border-box;
+        overflow-x: hidden;
+        height: 100vh;
+      }
+      .sidebar-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 25px;
+        white-space: nowrap;
+      }
+      .sidebar h2 {
+        margin: 0;
+        font-size: 1.1rem;
+        color: #007bff;
+      }
+      .hamburger-icon {
+        font-size: 22px;
+        cursor: pointer;
+        padding: 5px;
+      }
+      .sidebar nav ul {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+      }
+      .sidebar nav li a {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        padding: 12px 15px;
+        text-decoration: none;
+        color: #555;
+        border-radius: 8px;
+        margin-bottom: 10px;
+        transition: background-color 0.3s;
+        white-space: nowrap;
+      }
+      .sidebar nav li a.active,
+      .sidebar nav li a:hover {
+        background-color: #007bff;
+        color: white;
+      }
+      .sidebar nav li a i {
+        width: 20px;
+        text-align: center;
+      }
+      .sidebar.collapsed {
+        width: 80px;
+      }
+      .sidebar.collapsed h2,
+      .sidebar.collapsed .menu-text {
+        display: none;
+      }
+      .sidebar.collapsed .sidebar-header,
+      .sidebar.collapsed nav li a {
+        justify-content: center;
+      }
 
-        /* --- Main Content --- */
-        .main-content {
-            flex-grow: 1;
-            padding: 30px;
-            overflow-y: auto;
-        }
-        
-        /* --- Header Section --- */
-        .header-section {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 20px;
-            margin-bottom: 25px;
-        }
-        
-        .data-card {
-            background-color: #fff;
-            padding: 15px 20px;
-            border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.05);
-            text-align: center;
-            flex-grow: 1;
-        }
-        .data-card h3 {
-            margin: 0 0 5px 0;
-            font-size: 1rem;
-            color: #6c757d;
-            font-weight: normal;
-        }
-        .data-card p {
-            margin: 0;
-            font-size: 1.75rem;
-            font-weight: bold;
-            color: #0d6efd;
-        }
+      /* --- Main Content --- */
+      .main-content {
+        flex-grow: 1;
+        padding: 30px;
+        overflow-y: auto;
+      }
 
-        .date-picker-card {
-            background-color: #fff;
-            padding: 15px 20px;
-            border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.05);
-            text-align: center;
-        }
-        .date-picker-card label {
-            display: block;
-            margin-bottom: 5px;
-            color: #6c757d;
-        }
-        .date-picker-card select {
-            padding: 8px 12px;
-            border-radius: 6px;
-            border: 1px solid #ccc;
-            font-size: 1rem;
-            font-family: 'Sarabun', sans-serif;
-            min-width: 200px;
-            cursor: pointer;
-        }
+      /* --- Header Section --- */
+      .header-section {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 20px;
+        margin-bottom: 25px;
+      }
 
-        /* --- Chart Section --- */
-        .chart-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
-            gap: 20px;
-        }
-        .chart-container {
-            background-color: white;
-            padding: 20px;
-            border-radius: 12px;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.05);
-        }
+      .data-card {
+        background-color: #fff;
+        padding: 15px 20px;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+        text-align: center;
+        flex-grow: 1;
+      }
+      .data-card h3 {
+        margin: 0 0 5px 0;
+        font-size: 1rem;
+        color: #6c757d;
+        font-weight: normal;
+      }
+      .data-card p {
+        margin: 0;
+        font-size: 1.75rem;
+        font-weight: bold;
+        color: #0d6efd;
+      }
+
+      .date-picker-card {
+        background-color: #fff;
+        padding: 15px 20px;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+        text-align: center;
+      }
+      .date-picker-card label {
+        display: block;
+        margin-bottom: 5px;
+        color: #6c757d;
+      }
+      .date-picker-card select {
+        padding: 8px 12px;
+        border-radius: 6px;
+        border: 1px solid #ccc;
+        font-size: 1rem;
+        font-family: "Sarabun", sans-serif;
+        min-width: 200px;
+        cursor: pointer;
+      }
+
+      /* --- Chart Section --- */
+      .chart-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+        gap: 20px;
+      }
+      .chart-container {
+        background-color: white;
+        padding: 20px;
+        border-radius: 12px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+      }
     </style>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;700&display=swap" rel="stylesheet">
-</head>
-<body>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;700&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
     <div class="container">
-        <aside class="sidebar">
-            <h2>ระบบควบคุบรดน้ำต้นทุเรียน</h2>
-            <nav>
-                <ul>
-                    <li><a href="index.html">🎛️ ข้อมูลและการควบคุม</a></li> 
-                    <li><a href="t2.html" class="active">📊 ค่าเฉลี่ยข้อมูล</a></li>
-                </ul>
-            </nav>
-        </aside>
+      <aside class="sidebar" id="mySidebar">
+        <div class="sidebar-header">
+          <h2>ระบบรดน้ำทุเรียน</h2>
+          <i class="fas fa-bars hamburger-icon" onclick="toggleMenu()"></i>
+        </div>
+        <nav>
+          <ul>
+            <li>
+              <a href="index.html">
+                <i class="fas fa-table-cells-large"></i>
+                <span class="menu-text">ข้อมูลและการควบคุม</span>
+              </a>
+            </li>
+            <li>
+              <a href="#" class="active">
+                <i class="fas fa-chart-line"></i>
+                <span class="menu-text">ค่าเฉลี่ยข้อมูล</span>
+              </a>
+            </li>
+          </ul>
+        </nav>
+      </aside>
 
-        <main class="main-content">
-            <section class="header-section">
-                <div class="data-card">
-                    <h3>ข้อมูลอุณหภูมิ</h3>
-                    <p id="avg-temp">29.5 °C</p>
-                </div>
-                <div class="data-card">
-                    <h3>ข้อมูลความชื้นดิน</h3>
-                    <p id="avg-soil">58 %</p>
-                </div>
-                <div class="data-card">
-                    <h3>ข้อมูลความชื้น</h3>
-                    <p id="avg-humidity">72 %</p>
-                </div>
-                <div class="date-picker-card">
-                    <label for="data-date">วันที่ในการเก็บข้อมูล</label>
-                    <select id="data-date">
-                        <option value="">กำลังโหลดข้อมูล...</option>
-                    </select>
-                </div>
-            </section>
-            
-            <section class="chart-grid">
-                <div class="chart-container">
-                    <canvas id="tempChart"></canvas>
-                </div>
-                <div class="chart-container">
-                    <canvas id="soilChart"></canvas>
-                </div>
-                <div class="chart-container" style="grid-column: 1 / -1;"> <canvas id="humidityChart"></canvas>
-                </div>
-            </section>
-        </main>
+      <main class="main-content">
+        <section class="header-section">
+          <div class="data-card">
+            <h3>ข้อมูลอุณหภูมิ</h3>
+            <p id="avg-temp">29.5 °C</p>
+          </div>
+          <div class="data-card">
+            <h3>ข้อมูลความชื้นดิน</h3>
+            <p id="avg-soil">58 %</p>
+          </div>
+          <div class="data-card">
+            <h3>ข้อมูลความชื้น</h3>
+            <p id="avg-humidity">72 %</p>
+          </div>
+          <div class="date-picker-card">
+            <label for="data-date">วันที่ในการเก็บข้อมูล</label>
+            <select id="data-date">
+              <option value="">กำลังโหลดข้อมูล...</option>
+            </select>
+          </div>
+        </section>
+
+        <section class="chart-grid">
+          <div class="chart-container">
+            <canvas id="tempChart"></canvas>
+          </div>
+          <div class="chart-container">
+            <canvas id="soilChart"></canvas>
+          </div>
+          <div class="chart-container" style="grid-column: 1 / -1">
+            <canvas id="humidityChart"></canvas>
+          </div>
+        </section>
+      </main>
     </div>
 
     <script>
-        let allData = [];
-        let tempChart, soilChart, humidityChart;
-        let availableDates = [];
+      let allData = [];
+      let tempChart, soilChart, humidityChart;
+      let availableDates = [];
 
-        // Function to parse CSV
-        function parseCSV(csvText) {
-            const lines = csvText.trim().split('\n');
-            const headers = lines[0].split(',');
-            const data = [];
-            
-            for (let i = 1; i < lines.length; i++) {
-                const values = lines[i].split(',');
-                if (values.length === headers.length) {
-                    data.push({
-                        day: values[0],
-                        time: values[1],
-                        temperature: parseFloat(values[2]),
-                        humidity: parseFloat(values[3]),
-                        moisture: parseFloat(values[4])
-                    });
-                }
-            }
-            return data;
+      // Function to parse CSV
+      function parseCSV(csvText) {
+        const lines = csvText.trim().split("\n");
+        const headers = lines[0].split(",");
+        const data = [];
+
+        for (let i = 1; i < lines.length; i++) {
+          const values = lines[i].split(",");
+          if (values.length === headers.length) {
+            data.push({
+              day: values[0],
+              time: values[1],
+              temperature: parseFloat(values[2]),
+              humidity: parseFloat(values[3]),
+              moisture: parseFloat(values[4]),
+            });
+          }
         }
+        return data;
+      }
 
-        // Function to filter data by selected date
-        function filterDataByDate(data, selectedDate) {
-            return data.filter(row => row.day === selectedDate);
-        }
+      // Function to filter data by selected date
+      function filterDataByDate(data, selectedDate) {
+        return data.filter((row) => row.day === selectedDate);
+      }
 
-        // Function to calculate average
-        function calculateAverage(data, field) {
-            if (data.length === 0) return 0;
-            const sum = data.reduce((acc, row) => acc + row[field], 0);
-            return (sum / data.length).toFixed(1);
-        }
+      // Function to calculate average
+      function calculateAverage(data, field) {
+        if (data.length === 0) return 0;
+        const sum = data.reduce((acc, row) => acc + row[field], 0);
+        return (sum / data.length).toFixed(1);
+      }
 
-        // Function to create a chart
-        function createChart(canvasId, label, data, color, yAxisLabel) {
-            const ctx = document.getElementById(canvasId).getContext('2d');
-            return new Chart(ctx, {
-                type: 'line',
-                data: {
-                    labels: data.labels,
-                    datasets: [{
-                        label: label,
-                        data: data.values,
-                        borderColor: color,
-                        backgroundColor: color + '33',
-                        tension: 0.4,
-                        fill: true
-                    }]
+      // Function to create a chart
+      function createChart(canvasId, label, data, color, yAxisLabel) {
+        const ctx = document.getElementById(canvasId).getContext("2d");
+        return new Chart(ctx, {
+          type: "line",
+          data: {
+            labels: data.labels,
+            datasets: [
+              {
+                label: label,
+                data: data.values,
+                borderColor: color,
+                backgroundColor: color + "33",
+                tension: 0.4,
+                fill: true,
+              },
+            ],
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+              legend: { display: false },
+              title: {
+                display: true,
+                text: label,
+                font: { size: 16, family: "Sarabun" },
+              },
+            },
+            scales: {
+              y: {
+                beginAtZero: false,
+                title: {
+                  display: true,
+                  text: yAxisLabel,
                 },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: { display: false },
-                        title: {
-                            display: true,
-                            text: label,
-                            font: { size: 16, family: 'Sarabun' }
-                        }
-                    },
-                    scales: {
-                        y: {
-                            beginAtZero: false,
-                            title: {
-                                display: true,
-                                text: yAxisLabel
-                            }
-                        }
-                    }
-                }
-            });
+              },
+            },
+          },
+        });
+      }
+
+      // Function to update charts
+      function updateCharts(filteredData) {
+        const labels = filteredData.map((row) => row.time);
+        const tempValues = filteredData.map((row) => row.temperature);
+        const moistureValues = filteredData.map((row) => row.moisture);
+        const humidityValues = filteredData.map((row) => row.humidity);
+
+        // Update average values
+        document.getElementById("avg-temp").textContent =
+          calculateAverage(filteredData, "temperature") + " °C";
+        document.getElementById("avg-soil").textContent =
+          calculateAverage(filteredData, "moisture") + " %";
+        document.getElementById("avg-humidity").textContent =
+          calculateAverage(filteredData, "humidity") + " %";
+
+        // Destroy old charts if they exist
+        if (tempChart) tempChart.destroy();
+        if (soilChart) soilChart.destroy();
+        if (humidityChart) humidityChart.destroy();
+
+        // Create new charts
+        tempChart = createChart(
+          "tempChart",
+          "กราฟข้อมูลเฉลี่ยอุณหภูมิ",
+          { labels, values: tempValues },
+          "#ff6384",
+          "องศาเซลเซียส (°C)"
+        );
+        soilChart = createChart(
+          "soilChart",
+          "กราฟข้อมูลเฉลี่ยความชื้นดิน",
+          { labels, values: moistureValues },
+          "#36a2eb",
+          "เปอร์เซ็นต์ (%)"
+        );
+        humidityChart = createChart(
+          "humidityChart",
+          "กราฟข้อมูลเฉลี่ยความชื้น",
+          { labels, values: humidityValues },
+          "#4bc0c0",
+          "เปอร์เซ็นต์ (%)"
+        );
+      }
+
+      // Function to get unique dates from data
+      function getUniqueDates(data) {
+        const dates = [...new Set(data.map((row) => row.day))];
+        return dates.sort((a, b) => {
+          // Sort by date (newest first)
+          const [dayA, monthA, yearA] = a.split("/").map(Number);
+          const [dayB, monthB, yearB] = b.split("/").map(Number);
+          const dateA = new Date(yearA, monthA - 1, dayA);
+          const dateB = new Date(yearB, monthB - 1, dayB);
+          return dateB - dateA;
+        });
+      }
+
+      // Function to populate date dropdown
+      function populateDateDropdown(dates) {
+        const select = document.getElementById("data-date");
+        select.innerHTML = "";
+
+        dates.forEach((date, index) => {
+          const option = document.createElement("option");
+          option.value = date;
+          option.textContent = date;
+          if (index === 0) option.selected = true; // Select the latest date
+          select.appendChild(option);
+        });
+      }
+
+      // Load CSV data
+      async function loadData() {
+        try {
+          const response = await fetch("data/DataDHT.csv");
+          const csvText = await response.text();
+          allData = parseCSV(csvText);
+
+          // Get unique dates and populate dropdown
+          availableDates = getUniqueDates(allData);
+          populateDateDropdown(availableDates);
+
+          // Show data for the latest date
+          const latestDate = availableDates[0];
+          const latestData = filterDataByDate(allData, latestDate);
+          updateCharts(latestData);
+        } catch (error) {
+          console.error("Error loading CSV:", error);
+          document.getElementById("data-date").innerHTML =
+            "<option>ไม่สามารถโหลดข้อมูลได้</option>";
         }
+      }
 
-        // Function to update charts
-        function updateCharts(filteredData) {
-            const labels = filteredData.map(row => row.time);
-            const tempValues = filteredData.map(row => row.temperature);
-            const moistureValues = filteredData.map(row => row.moisture);
-            const humidityValues = filteredData.map(row => row.humidity);
+      function toggleMenu() {
+        document.getElementById("mySidebar").classList.toggle("collapsed");
+      }
 
-            // Update average values
-            document.getElementById('avg-temp').textContent = calculateAverage(filteredData, 'temperature') + ' °C';
-            document.getElementById('avg-soil').textContent = calculateAverage(filteredData, 'moisture') + ' %';
-            document.getElementById('avg-humidity').textContent = calculateAverage(filteredData, 'humidity') + ' %';
-
-            // Destroy old charts if they exist
-            if (tempChart) tempChart.destroy();
-            if (soilChart) soilChart.destroy();
-            if (humidityChart) humidityChart.destroy();
-
-            // Create new charts
-            tempChart = createChart('tempChart', 'กราฟข้อมูลเฉลี่ยอุณหภูมิ', 
-                { labels, values: tempValues }, '#ff6384', 'องศาเซลเซียส (°C)');
-            soilChart = createChart('soilChart', 'กราฟข้อมูลเฉลี่ยความชื้นดิน', 
-                { labels, values: moistureValues }, '#36a2eb', 'เปอร์เซ็นต์ (%)');
-            humidityChart = createChart('humidityChart', 'กราฟข้อมูลเฉลี่ยความชื้น', 
-                { labels, values: humidityValues }, '#4bc0c0', 'เปอร์เซ็นต์ (%)');
-        }
-
-        // Function to get unique dates from data
-        function getUniqueDates(data) {
-            const dates = [...new Set(data.map(row => row.day))];
-            return dates.sort((a, b) => {
-                // Sort by date (newest first)
-                const [dayA, monthA, yearA] = a.split('/').map(Number);
-                const [dayB, monthB, yearB] = b.split('/').map(Number);
-                const dateA = new Date(yearA, monthA - 1, dayA);
-                const dateB = new Date(yearB, monthB - 1, dayB);
-                return dateB - dateA;
-            });
-        }
-
-        // Function to populate date dropdown
-        function populateDateDropdown(dates) {
-            const select = document.getElementById('data-date');
-            select.innerHTML = '';
-            
-            dates.forEach((date, index) => {
-                const option = document.createElement('option');
-                option.value = date;
-                option.textContent = date;
-                if (index === 0) option.selected = true; // Select the latest date
-                select.appendChild(option);
-            });
-        }
-
-        // Load CSV data
-        async function loadData() {
-            try {
-                const response = await fetch('data/DataDHT.csv');
-                const csvText = await response.text();
-                allData = parseCSV(csvText);
-                
-                // Get unique dates and populate dropdown
-                availableDates = getUniqueDates(allData);
-                populateDateDropdown(availableDates);
-                
-                // Show data for the latest date
-                const latestDate = availableDates[0];
-                const latestData = filterDataByDate(allData, latestDate);
-                updateCharts(latestData);
-                
-            } catch (error) {
-                console.error('Error loading CSV:', error);
-                document.getElementById('data-date').innerHTML = '<option>ไม่สามารถโหลดข้อมูลได้</option>';
-            }
-        }
-
-        // Event listener for date picker
-        document.getElementById('data-date').addEventListener('change', function(e) {
-            const selectedDate = e.target.value;
-            const filteredData = filterDataByDate(allData, selectedDate);
-            updateCharts(filteredData);
+      // Event listener for date picker
+      document
+        .getElementById("data-date")
+        .addEventListener("change", function (e) {
+          const selectedDate = e.target.value;
+          const filteredData = filterDataByDate(allData, selectedDate);
+          updateCharts(filteredData);
         });
 
-        // Load data when page loads
-        window.onload = loadData;
+      // Load data when page loads
+      window.onload = loadData;
     </script>
-</body>
+  </body>
 </html>

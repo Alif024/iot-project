@@ -241,16 +241,6 @@
         "wires": []
     },
     {
-        "id": "dcfc8d1126f139d5",
-        "type": "comment",
-        "z": "57039b3341dfaa9c",
-        "name": "Http-in node created API sending todo list as response",
-        "info": "",
-        "x": 620,
-        "y": 1160,
-        "wires": []
-    },
-    {
         "id": "f351033226953150",
         "type": "change",
         "z": "57039b3341dfaa9c",
@@ -327,7 +317,7 @@
         "type": "debug",
         "z": "57039b3341dfaa9c",
         "name": "debug 7",
-        "active": true,
+        "active": false,
         "tosidebar": true,
         "console": false,
         "tostatus": false,
