@@ -218,7 +218,7 @@
 
         // ดึงข้อมูล sensor จาก Node-RED API
         function updateSensorData() {
-            fetch('http://localhost:1880/api/sensor')
+            fetch('/api/sensor')
                 .then(response => response.json())
                 .then(data => {
                     document.querySelectorAll('.card .data-display')[0].textContent = `${data.temperature ?? '-'} °C`;
