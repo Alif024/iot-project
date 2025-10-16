@@ -1,0 +1,580 @@
+[
+    {
+        "id": "57039b3341dfaa9c",
+        "type": "tab",
+        "label": "main",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "29fc17939608d9ab",
+        "type": "tab",
+        "label": "Flow 1",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "a4a23d933cecfb00",
+        "type": "group",
+        "z": "29fc17939608d9ab",
+        "style": {
+            "stroke": "#999999",
+            "stroke-opacity": "1",
+            "fill": "none",
+            "fill-opacity": "1",
+            "label": true,
+            "label-position": "nw",
+            "color": "#a4a4a4"
+        },
+        "nodes": [
+            "59e0b7aef73a24d3",
+            "5ac64f3fe0b6f521",
+            "42e7acf24ca7f0e8",
+            "d671a6a3fc492623",
+            "30528d180c1a1b67",
+            "45e9d06360bfe6c5",
+            "751b2f8bf8bdea22",
+            "83c00ee95508171c",
+            "25e45f3c5a39ec3d"
+        ],
+        "x": 714,
+        "y": 419,
+        "w": 1432,
+        "h": 282
+    },
+    {
+        "id": "93ea62446847b0ee",
+        "type": "mqtt-broker",
+        "name": "connect mqtt",
+        "broker": "hivemq",
+        "port": "1883",
+        "tls": "",
+        "clientid": "",
+        "autoConnect": true,
+        "usetls": false,
+        "protocolVersion": 4,
+        "keepalive": 60,
+        "cleansession": true,
+        "autoUnsubscribe": true,
+        "birthTopic": "",
+        "birthQos": "0",
+        "birthRetain": "false",
+        "birthPayload": "",
+        "birthMsg": {},
+        "closeTopic": "",
+        "closeQos": "0",
+        "closeRetain": "false",
+        "closePayload": "",
+        "closeMsg": {},
+        "willTopic": "",
+        "willQos": "0",
+        "willRetain": "false",
+        "willPayload": "",
+        "willMsg": {},
+        "userProps": "",
+        "sessionExpiry": ""
+    },
+    {
+        "id": "1ef2bf2279aee892",
+        "type": "mqtt in",
+        "z": "57039b3341dfaa9c",
+        "name": "",
+        "topic": "DHT/temperature",
+        "qos": "2",
+        "datatype": "auto-detect",
+        "broker": "93ea62446847b0ee",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 480,
+        "y": 640,
+        "wires": [
+            [
+                "1376a54cb27fc78d",
+                "68dacb65566b2210"
+            ]
+        ]
+    },
+    {
+        "id": "1376a54cb27fc78d",
+        "type": "debug",
+        "z": "57039b3341dfaa9c",
+        "name": "debug 1",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 640,
+        "y": 640,
+        "wires": []
+    },
+    {
+        "id": "68dacb65566b2210",
+        "type": "function",
+        "z": "57039b3341dfaa9c",
+        "name": "set data to flow",
+        "func": "let topic = msg.topic;               // ดึงชื่อ topic เช่น \"DHT/temperature\"\nlet value = parseFloat(msg.payload); // แปลงค่าที่ส่งมาเป็นตัวเลข\n\nif (topic === \"DHT/temperature\") {\n    flow.set(\"temperature\", value);  // เก็บลง context key = temperature\n} else if (topic === \"DHT/moisture\") {\n    flow.set(\"moisture\", value);     // เก็บลง context key = moisture\n} else if (topic === \"DHT/humidity\") {\n    flow.set(\"humidity\", value);     // เก็บลง context key = humidity\n}\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 880,
+        "y": 800,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "2c279e0a5771f0d7",
+        "type": "mqtt in",
+        "z": "57039b3341dfaa9c",
+        "name": "",
+        "topic": "DHT/humidity",
+        "qos": "2",
+        "datatype": "auto-detect",
+        "broker": "93ea62446847b0ee",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 470,
+        "y": 820,
+        "wires": [
+            [
+                "62a4c76aec60e90b",
+                "68dacb65566b2210"
+            ]
+        ]
+    },
+    {
+        "id": "a0de45ac634d106f",
+        "type": "mqtt in",
+        "z": "57039b3341dfaa9c",
+        "name": "",
+        "topic": "DHT/moisture",
+        "qos": "2",
+        "datatype": "auto-detect",
+        "broker": "93ea62446847b0ee",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 470,
+        "y": 980,
+        "wires": [
+            [
+                "e3700801596bc613",
+                "68dacb65566b2210"
+            ]
+        ]
+    },
+    {
+        "id": "62a4c76aec60e90b",
+        "type": "debug",
+        "z": "57039b3341dfaa9c",
+        "name": "debug 5",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 620,
+        "y": 820,
+        "wires": []
+    },
+    {
+        "id": "e3700801596bc613",
+        "type": "debug",
+        "z": "57039b3341dfaa9c",
+        "name": "debug 6",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 620,
+        "y": 980,
+        "wires": []
+    },
+    {
+        "id": "3a22f6d2099e6565",
+        "type": "mqtt out",
+        "z": "29fc17939608d9ab",
+        "name": "",
+        "topic": "Btns/valve",
+        "qos": "",
+        "retain": "",
+        "respTopic": "",
+        "contentType": "",
+        "userProps": "",
+        "correl": "",
+        "expiry": "",
+        "broker": "93ea62446847b0ee",
+        "x": 1410,
+        "y": 760,
+        "wires": []
+    },
+    {
+        "id": "e775f8fb4be1aefc",
+        "type": "mqtt out",
+        "z": "29fc17939608d9ab",
+        "name": "",
+        "topic": "Manual/humidity",
+        "qos": "",
+        "retain": "",
+        "respTopic": "",
+        "contentType": "",
+        "userProps": "",
+        "correl": "",
+        "expiry": "",
+        "broker": "93ea62446847b0ee",
+        "x": 1820,
+        "y": 1080,
+        "wires": []
+    },
+    {
+        "id": "bec4d403d5e77cb8",
+        "type": "mqtt out",
+        "z": "29fc17939608d9ab",
+        "name": "",
+        "topic": "Manual/Temperature",
+        "qos": "",
+        "retain": "",
+        "respTopic": "",
+        "contentType": "",
+        "userProps": "",
+        "correl": "",
+        "expiry": "",
+        "broker": "93ea62446847b0ee",
+        "x": 1840,
+        "y": 900,
+        "wires": []
+    },
+    {
+        "id": "e51bafa7825e7ef8",
+        "type": "function",
+        "z": "29fc17939608d9ab",
+        "name": "reset temp to -40",
+        "func": "let state = msg.payload;\nif (state == \"0\") {\n    msg.payload = \"-40\";\n    return msg;\n}",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 930,
+        "y": 820,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "f88138ac4e692d1a",
+        "type": "function",
+        "z": "29fc17939608d9ab",
+        "name": "reset humi to 0",
+        "func": "let state = msg.payload;\nif (state == \"0\") {\n    msg.payload = \"0\";\n    return msg;\n}",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 940,
+        "y": 960,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "2f251c2059a8e359",
+        "type": "join",
+        "z": "29fc17939608d9ab",
+        "name": "รวม Switch + Temp",
+        "mode": "custom",
+        "build": "object",
+        "property": "payload",
+        "propertyType": "msg",
+        "key": "topic",
+        "joiner": "\\n",
+        "joinerType": "str",
+        "useparts": true,
+        "accumulate": true,
+        "timeout": "",
+        "count": 2,
+        "reduceRight": false,
+        "reduceExp": "",
+        "reduceInit": "",
+        "reduceInitType": "",
+        "reduceFixup": "",
+        "x": 1400,
+        "y": 900,
+        "wires": [
+            [
+                "a646bd310b75bf5e"
+            ]
+        ]
+    },
+    {
+        "id": "a646bd310b75bf5e",
+        "type": "function",
+        "z": "29fc17939608d9ab",
+        "name": "function 4",
+        "func": "let obj = msg.payload;\nif (obj.switch === \"1\") {\n    msg.payload = obj.temperature;\n    return msg;\n}\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1600,
+        "y": 900,
+        "wires": [
+            [
+                "bec4d403d5e77cb8"
+            ]
+        ]
+    },
+    {
+        "id": "4997a040de6a6a9f",
+        "type": "join",
+        "z": "29fc17939608d9ab",
+        "name": "รวม Switch + Humi",
+        "mode": "custom",
+        "build": "object",
+        "property": "payload",
+        "propertyType": "msg",
+        "key": "topic",
+        "joiner": "\\n",
+        "joinerType": "str",
+        "useparts": true,
+        "accumulate": true,
+        "timeout": "",
+        "count": 2,
+        "reduceRight": false,
+        "reduceExp": "",
+        "reduceInit": "",
+        "reduceInitType": "",
+        "reduceFixup": "",
+        "x": 1420,
+        "y": 1080,
+        "wires": [
+            [
+                "11a9c735540e31e3"
+            ]
+        ]
+    },
+    {
+        "id": "11a9c735540e31e3",
+        "type": "function",
+        "z": "29fc17939608d9ab",
+        "name": "function 2",
+        "func": "let obj = msg.payload;\nif (obj.switch === \"1\") {\n    msg.payload = obj.humidity;\n    return msg;\n}\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1620,
+        "y": 1080,
+        "wires": [
+            [
+                "e775f8fb4be1aefc"
+            ]
+        ]
+    },
+    {
+        "id": "59e0b7aef73a24d3",
+        "type": "function",
+        "z": "29fc17939608d9ab",
+        "g": "a4a23d933cecfb00",
+        "name": "prepare to write file",
+        "func": "let obj = msg.payload;\nlet h = obj.humidity;\nlet t = obj.temperature;\nlet m = obj.moisture;\n\n// ดึงวันที่เวลา\nconst now = new Date();\nconst day = String(now.getDate()).padStart(2, '0');\nconst month = String(now.getMonth() + 1).padStart(2, '0');\nconst year = now.getFullYear();\nconst hour = String(now.getHours()).padStart(2, '0');\nconst minute = String(now.getMinutes()).padStart(2, '0');\nconst second = String(now.getSeconds()).padStart(2, '0');\n\n// สร้างข้อความใหม่\nmsg.payload = `${day}/${month}/${year},${hour}:${minute}:${second},${t},${m},${h}`;\n\nreturn msg;\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1450,
+        "y": 640,
+        "wires": [
+            [
+                "5ac64f3fe0b6f521"
+            ]
+        ]
+    },
+    {
+        "id": "5ac64f3fe0b6f521",
+        "type": "file",
+        "z": "29fc17939608d9ab",
+        "g": "a4a23d933cecfb00",
+        "name": "",
+        "filename": "C:\\Users\\Feen\\OneDrive\\Documents\\Arduino\\PJT new\\Excel\\DataDHT.csv",
+        "filenameType": "str",
+        "appendNewline": true,
+        "createDir": false,
+        "overwriteFile": "false",
+        "encoding": "none",
+        "x": 1860,
+        "y": 640,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "42e7acf24ca7f0e8",
+        "type": "function",
+        "z": "29fc17939608d9ab",
+        "g": "a4a23d933cecfb00",
+        "name": "set data to flow",
+        "func": "let topic = msg.topic;               // ดึงชื่อ topic เช่น \"DHT/temperature\"\nlet value = parseFloat(msg.payload); // แปลงค่าที่ส่งมาเป็นตัวเลข\n\nif (topic === \"DHT/temperature\") {\n    flow.set(\"temperature\", value);  // เก็บลง context key = temperature\n} else if (topic === \"DHT/moisture\") {\n    flow.set(\"moisture\", value);     // เก็บลง context key = moisture\n} else if (topic === \"DHT/humidity\") {\n    flow.set(\"humidity\", value);     // เก็บลง context key = humidity\n}\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 820,
+        "y": 460,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "30528d180c1a1b67",
+        "type": "function",
+        "z": "29fc17939608d9ab",
+        "g": "a4a23d933cecfb00",
+        "name": "function 1",
+        "func": "let timeset = msg.payload;\ntimeset = timeset * 60000;\nflow.set(\"timeset\", timeset);",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1180,
+        "y": 600,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "d671a6a3fc492623",
+        "type": "function",
+        "z": "29fc17939608d9ab",
+        "g": "a4a23d933cecfb00",
+        "name": "function 2",
+        "func": "// // รับเวลาจาก flow context หรือกำหนด default เป็น 1 นาที\nlet intervalTime = flow.get(\"timeset\");\n\n// ล้าง interval เก่าถ้ามี\nif (context.interval) {\n    clearInterval(context.interval);\n}\n\n// สร้าง interval ใหม่\ncontext.interval = setInterval(() => {\n    let t = flow.get(\"temperature\");\n    let m = flow.get(\"moisture\");\n    let h = flow.get(\"humidity\");\n    if (!isNaN(h) && !isNaN(t) && !isNaN(m)) {\n        node.send({ payload: { temperature: t, moisture: m, humidity: h }}); // ส่ง msg ออกทุก interval\n    }\n}, intervalTime);\n\n// return null; // ไม่ส่ง msg ตอนเรียก function node ครั้งแรก\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1260,
+        "y": 480,
+        "wires": [
+            [
+                "25e45f3c5a39ec3d",
+                "59e0b7aef73a24d3"
+            ]
+        ]
+    },
+    {
+        "id": "45e9d06360bfe6c5",
+        "type": "inject",
+        "z": "29fc17939608d9ab",
+        "g": "a4a23d933cecfb00",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": true,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "1",
+        "payloadType": "num",
+        "x": 850,
+        "y": 540,
+        "wires": [
+            [
+                "30528d180c1a1b67"
+            ]
+        ]
+    },
+    {
+        "id": "751b2f8bf8bdea22",
+        "type": "debug",
+        "z": "29fc17939608d9ab",
+        "g": "a4a23d933cecfb00",
+        "name": "debug 3",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1180,
+        "y": 660,
+        "wires": []
+    },
+    {
+        "id": "83c00ee95508171c",
+        "type": "debug",
+        "z": "29fc17939608d9ab",
+        "g": "a4a23d933cecfb00",
+        "name": "debug 2",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1260,
+        "y": 540,
+        "wires": []
+    },
+    {
+        "id": "25e45f3c5a39ec3d",
+        "type": "debug",
+        "z": "29fc17939608d9ab",
+        "g": "a4a23d933cecfb00",
+        "name": "debug 4",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1460,
+        "y": 540,
+        "wires": []
+    }
+]
