@@ -263,6 +263,8 @@
           valveStatus.textContent = "สถานะ: ปิดอยู่";
           sendValveStatus("close");
         }
+      });
+
       // ส่งสถานะวาล์วไป Node-RED API
       function sendValveStatus(status) {
         fetch("/api/valve", {
@@ -272,7 +274,11 @@
           },
           body: JSON.stringify({ status })
         })
-        .then(res => res.ok ? res.json() : Promise.reject(res))
+        .then(async res => {
+          if (!res.ok) throw res;
+          const text = await res.text();
+          return text ? JSON.parse(text) : {};
+        })
         .then(data => {
           // สามารถแสดงผลตอบกลับหรือแจ้งเตือนได้ที่นี่
           console.log("Valve status sent:", data);
@@ -281,12 +287,15 @@
           console.error("Error sending valve status:", err);
         });
       }
-      });
 
       // ดึงข้อมูล sensor จาก Node-RED API
       function updateSensorData() {
         fetch("/api/sensor")
-          .then((response) => response.json())
+          .then(async (response) => {
+            if (!response.ok) throw response;
+            const text = await response.text();
+            return text ? JSON.parse(text) : {};
+          })
           .then((data) => {
             document.querySelectorAll(
               ".card .data-display"

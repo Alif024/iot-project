@@ -120,14 +120,14 @@
         "type": "function",
         "z": "57039b3341dfaa9c",
         "name": "set data to flow",
-        "func": "let topic = msg.topic;               // ดึงชื่อ topic เช่น \"DHT/temperature\"\nlet value = parseFloat(msg.payload); // แปลงค่าที่ส่งมาเป็นตัวเลข\n\nif (topic === \"DHT/temperature\") {\n    flow.set(\"temperature\", value);  // เก็บลง context key = temperature\n} else if (topic === \"DHT/moisture\") {\n    flow.set(\"moisture\", value);     // เก็บลง context key = moisture\n} else if (topic === \"DHT/humidity\") {\n    flow.set(\"humidity\", value);     // เก็บลง context key = humidity\n}\n",
+        "func": "// ดึง sensor เก่าจาก flow context หรือสร้างใหม่ถ้ายังไม่มี\nlet sensor = flow.get(\"sensor\") || { temperature: 0, moisture: 0, humidity: 0 };\n\n// ดึง topic และค่า\nlet topic = msg.topic;\nlet value = parseFloat(msg.payload);\n\n// อัพเดทเฉพาะค่าที่ตรงกับ topic\nif (topic === \"DHT/temperature\") {\n    sensor.temperature = value;\n} else if (topic === \"DHT/moisture\") {\n    sensor.moisture = value;\n} else if (topic === \"DHT/humidity\") {\n    sensor.humidity = value;\n}\n\n// เก็บกลับลง flow context\nflow.set(\"sensor\", sensor);\n\n// ส่งต่อ msg\nmsg.sensor = sensor;\nreturn msg;\n",
         "outputs": 1,
         "timeout": 0,
         "noerr": 0,
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 880,
+        "x": 920,
         "y": 800,
         "wires": [
             []
@@ -317,7 +317,7 @@
         "type": "debug",
         "z": "57039b3341dfaa9c",
         "name": "debug 7",
-        "active": false,
+        "active": true,
         "tosidebar": true,
         "console": false,
         "tostatus": false,
@@ -361,8 +361,7 @@
         "y": 1200,
         "wires": [
             [
-                "730fc6d94c21b7f8",
-                "5284a06365a7f8f7"
+                "730fc6d94c21b7f8"
             ]
         ]
     },
@@ -373,8 +372,8 @@
         "name": "",
         "statusCode": "201",
         "headers": {},
-        "x": 660,
-        "y": 1260,
+        "x": 940,
+        "y": 1280,
         "wires": []
     },
     {
@@ -400,7 +399,8 @@
         "y": 1200,
         "wires": [
             [
-                "5e05b937d90ac339"
+                "5e05b937d90ac339",
+                "5284a06365a7f8f7"
             ]
         ]
     },
