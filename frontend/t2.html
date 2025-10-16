@@ -101,12 +101,14 @@
             margin-bottom: 5px;
             color: #6c757d;
         }
-        .date-picker-card input[type="date"] {
-            padding: 8px;
+        .date-picker-card select {
+            padding: 8px 12px;
             border-radius: 6px;
             border: 1px solid #ccc;
             font-size: 1rem;
             font-family: 'Sarabun', sans-serif;
+            min-width: 200px;
+            cursor: pointer;
         }
 
         /* --- Chart Section --- */
@@ -154,7 +156,9 @@
                 </div>
                 <div class="date-picker-card">
                     <label for="data-date">วันที่ในการเก็บข้อมูล</label>
-                    <input type="date" id="data-date">
+                    <select id="data-date">
+                        <option value="">กำลังโหลดข้อมูล...</option>
+                    </select>
                 </div>
             </section>
             
@@ -172,29 +176,56 @@
     </div>
 
     <script>
-        // 2. Set current date for the date picker
-        document.getElementById('data-date').valueAsDate = new Date();
+        let allData = [];
+        let tempChart, soilChart, humidityChart;
+        let availableDates = [];
 
-        // 3. Prepare sample data (ในชีวิตจริง ข้อมูลนี้จะมาจาก Server)
-        const timeLabels = ['00:00', '03:00', '06:00', '09:00', '12:00', '15:00', '18:00', '21:00'];
-        
-        const tempData = [27, 26, 28, 31, 33, 32, 29, 28];
-        const soilData = [65, 66, 64, 60, 55, 52, 58, 62];
-        const humidityData = [80, 82, 78, 70, 65, 68, 75, 77];
+        // Function to parse CSV
+        function parseCSV(csvText) {
+            const lines = csvText.trim().split('\n');
+            const headers = lines[0].split(',');
+            const data = [];
+            
+            for (let i = 1; i < lines.length; i++) {
+                const values = lines[i].split(',');
+                if (values.length === headers.length) {
+                    data.push({
+                        day: values[0],
+                        time: values[1],
+                        temperature: parseFloat(values[2]),
+                        humidity: parseFloat(values[3]),
+                        moisture: parseFloat(values[4])
+                    });
+                }
+            }
+            return data;
+        }
 
-        // 4. Function to create a chart
+        // Function to filter data by selected date
+        function filterDataByDate(data, selectedDate) {
+            return data.filter(row => row.day === selectedDate);
+        }
+
+        // Function to calculate average
+        function calculateAverage(data, field) {
+            if (data.length === 0) return 0;
+            const sum = data.reduce((acc, row) => acc + row[field], 0);
+            return (sum / data.length).toFixed(1);
+        }
+
+        // Function to create a chart
         function createChart(canvasId, label, data, color, yAxisLabel) {
             const ctx = document.getElementById(canvasId).getContext('2d');
-            new Chart(ctx, {
+            return new Chart(ctx, {
                 type: 'line',
                 data: {
-                    labels: timeLabels,
+                    labels: data.labels,
                     datasets: [{
                         label: label,
-                        data: data,
+                        data: data.values,
                         borderColor: color,
-                        backgroundColor: color + '33', // Add transparency to the color
-                        tension: 0.4, // Make the line smoother
+                        backgroundColor: color + '33',
+                        tension: 0.4,
                         fill: true
                     }]
                 },
@@ -222,12 +253,90 @@
             });
         }
 
-        // 5. Create all charts when the page loads
-        window.onload = function() {
-            createChart('tempChart', 'กราฟข้อมูลเฉลี่ยอุณหภูมิ', tempData, '#ff6384', 'องศาเซลเซียส (°C)');
-            createChart('soilChart', 'กราฟข้อมูลเฉลี่ยความชื้นดิน', soilData, '#36a2eb', 'เปอร์เซ็นต์ (%)');
-            createChart('humidityChart', 'กราฟข้อมูลเฉลี่ยความชื้น', humidityData, '#4bc0c0', 'เปอร์เซ็นต์ (%)');
-        };
+        // Function to update charts
+        function updateCharts(filteredData) {
+            const labels = filteredData.map(row => row.time);
+            const tempValues = filteredData.map(row => row.temperature);
+            const moistureValues = filteredData.map(row => row.moisture);
+            const humidityValues = filteredData.map(row => row.humidity);
+
+            // Update average values
+            document.getElementById('avg-temp').textContent = calculateAverage(filteredData, 'temperature') + ' °C';
+            document.getElementById('avg-soil').textContent = calculateAverage(filteredData, 'moisture') + ' %';
+            document.getElementById('avg-humidity').textContent = calculateAverage(filteredData, 'humidity') + ' %';
+
+            // Destroy old charts if they exist
+            if (tempChart) tempChart.destroy();
+            if (soilChart) soilChart.destroy();
+            if (humidityChart) humidityChart.destroy();
+
+            // Create new charts
+            tempChart = createChart('tempChart', 'กราฟข้อมูลเฉลี่ยอุณหภูมิ', 
+                { labels, values: tempValues }, '#ff6384', 'องศาเซลเซียส (°C)');
+            soilChart = createChart('soilChart', 'กราฟข้อมูลเฉลี่ยความชื้นดิน', 
+                { labels, values: moistureValues }, '#36a2eb', 'เปอร์เซ็นต์ (%)');
+            humidityChart = createChart('humidityChart', 'กราฟข้อมูลเฉลี่ยความชื้น', 
+                { labels, values: humidityValues }, '#4bc0c0', 'เปอร์เซ็นต์ (%)');
+        }
+
+        // Function to get unique dates from data
+        function getUniqueDates(data) {
+            const dates = [...new Set(data.map(row => row.day))];
+            return dates.sort((a, b) => {
+                // Sort by date (newest first)
+                const [dayA, monthA, yearA] = a.split('/').map(Number);
+                const [dayB, monthB, yearB] = b.split('/').map(Number);
+                const dateA = new Date(yearA, monthA - 1, dayA);
+                const dateB = new Date(yearB, monthB - 1, dayB);
+                return dateB - dateA;
+            });
+        }
+
+        // Function to populate date dropdown
+        function populateDateDropdown(dates) {
+            const select = document.getElementById('data-date');
+            select.innerHTML = '';
+            
+            dates.forEach((date, index) => {
+                const option = document.createElement('option');
+                option.value = date;
+                option.textContent = date;
+                if (index === 0) option.selected = true; // Select the latest date
+                select.appendChild(option);
+            });
+        }
+
+        // Load CSV data
+        async function loadData() {
+            try {
+                const response = await fetch('data/DataDHT.csv');
+                const csvText = await response.text();
+                allData = parseCSV(csvText);
+                
+                // Get unique dates and populate dropdown
+                availableDates = getUniqueDates(allData);
+                populateDateDropdown(availableDates);
+                
+                // Show data for the latest date
+                const latestDate = availableDates[0];
+                const latestData = filterDataByDate(allData, latestDate);
+                updateCharts(latestData);
+                
+            } catch (error) {
+                console.error('Error loading CSV:', error);
+                document.getElementById('data-date').innerHTML = '<option>ไม่สามารถโหลดข้อมูลได้</option>';
+            }
+        }
+
+        // Event listener for date picker
+        document.getElementById('data-date').addEventListener('change', function(e) {
+            const selectedDate = e.target.value;
+            const filteredData = filterDataByDate(allData, selectedDate);
+            updateCharts(filteredData);
+        });
+
+        // Load data when page loads
+        window.onload = loadData;
     </script>
 </body>
 </html>
