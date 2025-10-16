@@ -1,198 +1,203 @@
 <!DOCTYPE html>
 <html lang="th">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Dashboard - ข้อมูลและการควบคุม</title>
-    <link rel="icon" type="image/png" href="D:\projegto\Protos\IoT.png">
+    <link rel="icon" type="image/png" href="D:\projegto\Protos\IoT.png" />
     <style>
-        /* --- General Styles --- */
-        body {
-            font-family: 'Sarabun', sans-serif; /* ใช้ฟอนต์ที่รองรับภาษาไทย */
-            margin: 0;
-            background-color: #f0f2f5;
-            color: #333;
-            display: flex;
-        }
-        .container {
-            display: flex;
-            width: 100%;
-        }
+      /* --- General Styles --- */
+      body {
+        font-family: "Sarabun", sans-serif; /* ใช้ฟอนต์ที่รองรับภาษาไทย */
+        margin: 0;
+        background-color: #f0f2f5;
+        color: #333;
+        display: flex;
+      }
+      .container {
+        display: flex;
+        width: 100%;
+      }
 
-        /* --- Sidebar --- */
-        .sidebar {
-            width: 250px;
-            background-color: #ffffff;
-            padding: 20px;
-            height: 100vh;
-            box-shadow: 2px 0 5px rgba(0,0,0,0.1);
-        }
-        .sidebar h2 {
-            text-align: center;
-            color: #007bff;
-        }
-        .sidebar nav ul {
-            list-style: none;
-            padding: 0;
-        }
-        .sidebar nav li a {
-            display: block;
-            padding: 12px 15px;
-            text-decoration: none;
-            color: #555;
-            border-radius: 8px;
-            margin-bottom: 10px;
-            transition: background-color 0.3s;
-        }
-        .sidebar nav li a.active, .sidebar nav li a:hover {
-            background-color: #007bff;
-            color: white;
-        }
+      /* --- Sidebar --- */
+      .sidebar {
+        width: 250px;
+        background-color: #ffffff;
+        padding: 20px;
+        height: 100vh;
+        box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+      }
+      .sidebar h2 {
+        text-align: center;
+        color: #007bff;
+      }
+      .sidebar nav ul {
+        list-style: none;
+        padding: 0;
+      }
+      .sidebar nav li a {
+        display: block;
+        padding: 12px 15px;
+        text-decoration: none;
+        color: #555;
+        border-radius: 8px;
+        margin-bottom: 10px;
+        transition: background-color 0.3s;
+      }
+      .sidebar nav li a.active,
+      .sidebar nav li a:hover {
+        background-color: #007bff;
+        color: white;
+      }
 
-        /* --- Main Content --- */
-        .main-content {
-            flex-grow: 1;
-            padding: 30px;
-        }
-        header h1 {
-            font-size: 2rem;
-            margin-bottom: 20px;
-        }
-        .cards-container {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 20px;
-        }
-        .card {
-            background-color: white;
-            padding: 25px;
-            border-radius: 12px;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.05);
-            text-align: center;
-        }
-        .card h3 {
-            margin-top: 0;
-            font-size: 1.2rem;
-            color: #666;
-        }
-        .data-display {
-            font-size: 2.5rem;
-            font-weight: bold;
-            color: #007bff;
-            margin: 10px 0;
-        }
-        .card.valve-control {
-            background-color: #343a40;
-            color: white;
-            grid-column: 1 / -1; /* ทำให้การ์ดนี้เต็มความกว้าง */
-        }
-        .valve-control h3 {
-            color: #f8f9fa;
-        }
-        .valve-status {
-            font-size: 1.2rem;
-            margin-bottom: 15px;
-        }
-        .switch {
-            position: relative;
-            display: inline-block;
-            width: 60px;
-            height: 34px;
-        }
-        .switch input { display: none; }
-        .slider {
-            position: absolute;
-            cursor: pointer;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background-color: #ccc;
-            transition: .4s;
-            border-radius: 34px;
-        }
-        .slider:before {
-            position: absolute;
-            content: "";
-            height: 26px;
-            width: 26px;
-            left: 4px;
-            bottom: 4px;
-            background-color: white;
-            transition: .4s;
-            border-radius: 50%;
-        }
-        input:checked + .slider {
-            background-color: #28a745;
-        }
-        input:checked + .slider:before {
-            transform: translateX(26px);
-        }
-        .action-buttons {
-             grid-column: 1 / -1;
-             display: flex;
-             justify-content: center;
-             gap: 15px;
-             margin-top: 20px;
-        }
-        .btn {
-            padding: 12px 25px;
-            border: none;
-            border-radius: 8px;
-            background-color: #6c757d;
-            color: white;
-            font-size: 1rem;
-            cursor: pointer;
-            transition: background-color 0.3s;
-        }
-        .btn:hover {
-            background-color: #5a6268;
-        }
+      /* --- Main Content --- */
+      .main-content {
+        flex-grow: 1;
+        padding: 30px;
+      }
+      header h1 {
+        font-size: 2rem;
+        margin-bottom: 20px;
+      }
+      .cards-container {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 20px;
+      }
+      .card {
+        background-color: white;
+        padding: 25px;
+        border-radius: 12px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+        text-align: center;
+      }
+      .card h3 {
+        margin-top: 0;
+        font-size: 1.2rem;
+        color: #666;
+      }
+      .data-display {
+        font-size: 2.5rem;
+        font-weight: bold;
+        color: #007bff;
+        margin: 10px 0;
+      }
+      .card.valve-control {
+        background-color: #343a40;
+        color: white;
+        grid-column: 1 / -1; /* ทำให้การ์ดนี้เต็มความกว้าง */
+      }
+      .valve-control h3 {
+        color: #f8f9fa;
+      }
+      .valve-status {
+        font-size: 1.2rem;
+        margin-bottom: 15px;
+      }
+      .switch {
+        position: relative;
+        display: inline-block;
+        width: 60px;
+        height: 34px;
+      }
+      .switch input {
+        display: none;
+      }
+      .slider {
+        position: absolute;
+        cursor: pointer;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: #ccc;
+        transition: 0.4s;
+        border-radius: 34px;
+      }
+      .slider:before {
+        position: absolute;
+        content: "";
+        height: 26px;
+        width: 26px;
+        left: 4px;
+        bottom: 4px;
+        background-color: white;
+        transition: 0.4s;
+        border-radius: 50%;
+      }
+      input:checked + .slider {
+        background-color: #28a745;
+      }
+      input:checked + .slider:before {
+        transform: translateX(26px);
+      }
+      .action-buttons {
+        grid-column: 1 / -1;
+        display: flex;
+        justify-content: center;
+        gap: 15px;
+        margin-top: 20px;
+      }
+      .btn {
+        padding: 12px 25px;
+        border: none;
+        border-radius: 8px;
+        background-color: #6c757d;
+        color: white;
+        font-size: 1rem;
+        cursor: pointer;
+        transition: background-color 0.3s;
+      }
+      .btn:hover {
+        background-color: #5a6268;
+      }
     </style>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;700&display=swap" rel="stylesheet">
-</head>
-<body>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;700&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
     <div class="container">
-        <aside class="sidebar">
-            <h2>ระบบควบคุบรดน้ำต้นทุเรียน</h2>
-            <nav>
-                <ul>
-                    <li><a href="t1.html" class="active">🎛️ ข้อมูลและการควบคุม</a></li>
-                    <li><a href="t2.html">📊 ค่าเฉลี่ยข้อมูล</a></li>
-                </ul>
-            </nav>
-        </aside>
+      <aside class="sidebar">
+        <h2>ระบบควบคุบรดน้ำต้นทุเรียน</h2>
+        <nav>
+          <ul>
+            <li><a href="t1.html" class="active">🎛️ ข้อมูลและการควบคุม</a></li>
+            <li><a href="t2.html">📊 ค่าเฉลี่ยข้อมูล</a></li>
+          </ul>
+        </nav>
+      </aside>
 
-        <main class="main-content">
-            <header>
-                <h1>แดชบอร์ดข้อมูลและการควบคุม</h1>
-            </header>
-            <div class="cards-container">
-                <div class="card">
-                    <h3>🌡️ อุณหภูมิปัจจุบัน</h3>
-                    <p class="data-display">28 °C</p>
-                </div>
-                <div class="card">
-                    <h3>💧 ความชื้นปัจจุบัน</h3>
-                    <p class="data-display">65 %</p>
-                </div>
-                <div class="card">
-                    <h3>🌱 ความชื้นดินปัจจุบัน</h3>
-                    <p class="data-display">30 %</p>
-                </div>
-                <div class="card valve-control">
-                    <h3>🚱 การควบคุมวาล์วน้ำ</h3>
-                    <p id="valveStatus" class="valve-status">สถานะ: ปิดอยู่</p>
-                    <label class="switch">
-                        <input type="checkbox" id="valveSwitch">
-                        <span class="slider"></span>
-                    </label>
-                </div>
-                
-            </div>
-        </main>
+      <main class="main-content">
+        <header>
+          <h1>แดชบอร์ดข้อมูลและการควบคุม</h1>
+        </header>
+        <div class="cards-container">
+          <div class="card">
+            <h3>🌡️ อุณหภูมิปัจจุบัน</h3>
+            <p class="data-display">28 °C</p>
+          </div>
+          <div class="card">
+            <h3>💧 ความชื้นปัจจุบัน</h3>
+            <p class="data-display">65 %</p>
+          </div>
+          <div class="card">
+            <h3>🌱 ความชื้นดินปัจจุบัน</h3>
+            <p class="data-display">30 %</p>
+          </div>
+          <div class="card valve-control">
+            <h3>🚱 การควบคุมวาล์วน้ำ</h3>
+            <p id="valveStatus" class="valve-status">สถานะ: ปิดอยู่</p>
+            <label class="switch">
+              <input type="checkbox" id="valveSwitch" />
+              <span class="slider"></span>
+            </label>
+          </div>
+        </div>
+      </main>
     </div>
 
     <script>
@@ -210,6 +215,22 @@
                 console.log('Valve Closed');
             }
         });
+
+        // ดึงข้อมูล sensor จาก Node-RED API
+        function updateSensorData() {
+            fetch('http://localhost:1880/api/sensor')
+                .then(response => response.json())
+                .then(data => {
+                    document.querySelectorAll('.card .data-display')[0].textContent = `${data.temperature ?? '-'} °C`;
+                    document.querySelectorAll('.card .data-display')[2].textContent = `${data.moisture ?? '-'} %`;
+                    document.querySelectorAll('.card .data-display')[1].textContent = `${data.humidity ?? '-'} %`;
+                })
+                .catch(err => {
+                    console.error('API error:', err);
+                });
+        }
+        setInterval(updateSensorData, 5000);
+        updateSensorData();
     </script>
-</body>
+  </body>
 </html>

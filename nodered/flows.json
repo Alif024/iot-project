@@ -212,6 +212,134 @@
         "wires": []
     },
     {
+        "id": "27333f67794bdc72",
+        "type": "http in",
+        "z": "57039b3341dfaa9c",
+        "name": "",
+        "url": "/api/sensor",
+        "method": "get",
+        "upload": false,
+        "skipBodyParsing": false,
+        "swaggerDoc": "",
+        "x": 420,
+        "y": 1240,
+        "wires": [
+            [
+                "f351033226953150"
+            ]
+        ]
+    },
+    {
+        "id": "a7ee48616541a36a",
+        "type": "http response",
+        "z": "57039b3341dfaa9c",
+        "name": "",
+        "statusCode": "200",
+        "headers": {},
+        "x": 840,
+        "y": 1240,
+        "wires": []
+    },
+    {
+        "id": "dcfc8d1126f139d5",
+        "type": "comment",
+        "z": "57039b3341dfaa9c",
+        "name": "Http-in node created API sending todo list as response",
+        "info": "",
+        "x": 620,
+        "y": 1160,
+        "wires": []
+    },
+    {
+        "id": "f351033226953150",
+        "type": "change",
+        "z": "57039b3341dfaa9c",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "sensor",
+                "tot": "flow"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 620,
+        "y": 1240,
+        "wires": [
+            [
+                "a7ee48616541a36a"
+            ]
+        ]
+    },
+    {
+        "id": "9b1a6c853eea63e4",
+        "type": "function",
+        "z": "57039b3341dfaa9c",
+        "name": "set data to flow",
+        "func": "let t = flow.get(\"temperature\");\nlet h = flow.get(\"humidity\");\nlet m = flow.get(\"moisture\");\n\nlet sensor = flow.get(\"sensor\") || {};\n\nsensor.temperature = t;\nsensor.moisture = h;\nsensor.humidity = m;\n\n// เซฟกลับลง flow context\nflow.set(\"sensor\", sensor);\nmsg.payload = sensor\nreturn msg",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1240,
+        "y": 640,
+        "wires": [
+            [
+                "7136a53a31560db6"
+            ]
+        ]
+    },
+    {
+        "id": "af40226723cba115",
+        "type": "inject",
+        "z": "57039b3341dfaa9c",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            }
+        ],
+        "repeat": "1",
+        "crontab": "",
+        "once": true,
+        "onceDelay": "1",
+        "topic": "",
+        "payload": "1",
+        "payloadType": "num",
+        "x": 1050,
+        "y": 640,
+        "wires": [
+            [
+                "9b1a6c853eea63e4"
+            ]
+        ]
+    },
+    {
+        "id": "7136a53a31560db6",
+        "type": "debug",
+        "z": "57039b3341dfaa9c",
+        "name": "debug 7",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1420,
+        "y": 640,
+        "wires": []
+    },
+    {
         "id": "3a22f6d2099e6565",
         "type": "mqtt out",
         "z": "29fc17939608d9ab",

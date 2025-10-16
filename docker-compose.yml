@@ -36,17 +36,17 @@ services:
     networks:
       - appnet
 
-  ngrok:
-    image: ngrok/ngrok:latest
-    container_name: ngrok
-    depends_on:
-      - nginx
-    command: ["http", "--authtoken=${NGROK_AUTHTOKEN}", "--log=stdout", "nginx:80"]
-    environment:
-      - NGROK_AUTHTOKEN=${NGROK_AUTHTOKEN}
-    restart: unless-stopped
-    networks:
-      - appnet
+  # ngrok:
+  #   image: ngrok/ngrok:latest
+  #   container_name: ngrok
+  #   depends_on:
+  #     - nginx
+  #   command: ["http", "--authtoken=${NGROK_AUTHTOKEN}", "--log=stdout", "nginx:80"]
+  #   environment:
+  #     - NGROK_AUTHTOKEN=${NGROK_AUTHTOKEN}
+  #   restart: unless-stopped
+  #   networks:
+  #     - appnet
 
 networks:
   appnet:
