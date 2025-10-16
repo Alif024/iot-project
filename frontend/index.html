@@ -258,9 +258,29 @@
       valveSwitch.addEventListener("change", function () {
         if (this.checked) {
           valveStatus.textContent = "สถานะ: เปิดอยู่";
+          sendValveStatus("open");
         } else {
           valveStatus.textContent = "สถานะ: ปิดอยู่";
+          sendValveStatus("close");
         }
+      // ส่งสถานะวาล์วไป Node-RED API
+      function sendValveStatus(status) {
+        fetch("/api/valve", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({ status })
+        })
+        .then(res => res.ok ? res.json() : Promise.reject(res))
+        .then(data => {
+          // สามารถแสดงผลตอบกลับหรือแจ้งเตือนได้ที่นี่
+          console.log("Valve status sent:", data);
+        })
+        .catch(err => {
+          console.error("Error sending valve status:", err);
+        });
+      }
       });
 
       // ดึงข้อมูล sensor จาก Node-RED API

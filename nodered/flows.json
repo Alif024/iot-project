@@ -330,6 +330,136 @@
         "wires": []
     },
     {
+        "id": "ec6dd46949d77843",
+        "type": "mqtt out",
+        "z": "57039b3341dfaa9c",
+        "name": "",
+        "topic": "Btns/valve",
+        "qos": "",
+        "retain": "",
+        "respTopic": "",
+        "contentType": "",
+        "userProps": "",
+        "correl": "",
+        "expiry": "",
+        "broker": "93ea62446847b0ee",
+        "x": 1150,
+        "y": 1200,
+        "wires": []
+    },
+    {
+        "id": "825a6296456b7c27",
+        "type": "http in",
+        "z": "57039b3341dfaa9c",
+        "name": "",
+        "url": "/api/valve",
+        "method": "post",
+        "upload": true,
+        "skipBodyParsing": false,
+        "swaggerDoc": "",
+        "x": 420,
+        "y": 1200,
+        "wires": [
+            [
+                "730fc6d94c21b7f8",
+                "5284a06365a7f8f7"
+            ]
+        ]
+    },
+    {
+        "id": "5284a06365a7f8f7",
+        "type": "http response",
+        "z": "57039b3341dfaa9c",
+        "name": "",
+        "statusCode": "201",
+        "headers": {},
+        "x": 660,
+        "y": 1260,
+        "wires": []
+    },
+    {
+        "id": "730fc6d94c21b7f8",
+        "type": "change",
+        "z": "57039b3341dfaa9c",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "payload.status",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 680,
+        "y": 1200,
+        "wires": [
+            [
+                "5e05b937d90ac339"
+            ]
+        ]
+    },
+    {
+        "id": "5e05b937d90ac339",
+        "type": "change",
+        "z": "57039b3341dfaa9c",
+        "name": "",
+        "rules": [
+            {
+                "t": "change",
+                "p": "payload",
+                "pt": "msg",
+                "from": "open",
+                "fromt": "str",
+                "to": "1",
+                "tot": "str"
+            },
+            {
+                "t": "change",
+                "p": "payload",
+                "pt": "msg",
+                "from": "close",
+                "fromt": "str",
+                "to": "0",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 920,
+        "y": 1200,
+        "wires": [
+            [
+                "ec6dd46949d77843",
+                "49cdb23be8397031"
+            ]
+        ]
+    },
+    {
+        "id": "49cdb23be8397031",
+        "type": "debug",
+        "z": "57039b3341dfaa9c",
+        "name": "debug 8",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1140,
+        "y": 1080,
+        "wires": []
+    },
+    {
         "id": "3a22f6d2099e6565",
         "type": "mqtt out",
         "z": "29fc17939608d9ab",
